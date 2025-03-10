@@ -287,3 +287,15 @@ footer nav ul {
   justify-content: flex-end;
   margin: 2em;
 }
+
+.edit-mode {
+  /* width: 100vw;
+  max-width: none; */
+  height: 59px;
+  background: #000000;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 21px;
+}

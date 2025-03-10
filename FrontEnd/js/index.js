@@ -13,7 +13,13 @@ const fetchWorks = async () => {
     });
 
     displayWorks(works);
-    fetchCategories();
+    if (sessionStorage.getItem("token")) {
+      const script = document.createElement("script");
+      script.src = "js/admin.js";
+      document.body.appendChild(script);
+    } else {
+      fetchCategories();
+    }
   } catch (error) {
     console.log(error);
   }
