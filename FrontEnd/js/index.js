@@ -1,3 +1,5 @@
+import { isAdmin, updateNavButton } from "./auth.js";
+
 const gallery = document.querySelector(".gallery");
 const portfolio = document.querySelector("#portfolio");
 const categories = new Set(["Tous"]);
@@ -13,10 +15,10 @@ const fetchWorks = async () => {
     });
 
     displayWorks(works);
-    if (sessionStorage.getItem("token")) {
-      const script = document.createElement("script");
-      script.src = "js/admin.js";
-      document.body.appendChild(script);
+    updateNavButton();
+
+    if (isAdmin()) {
+      getAdminMode();
     } else {
       fetchCategories();
     }
@@ -72,6 +74,10 @@ const filterWorks = (category) => {
     );
     displayWorks(filteredWorks);
   }
+};
+
+const getAdminMode = () => {
+  import("./admin.js").then((module) => module.default());
 };
 
 fetchWorks();
