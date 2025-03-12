@@ -19,6 +19,47 @@
     ></script>
   </head>
   <body>
+    <aside id="edit-modal" class="modal" style="display: none">
+      <div class="modal-container">
+        <div class="action-icons">
+          <i class="fa-solid fa-arrow-left back-modal"></i>
+          <i class="fa-solid fa-xmark close-modal"></i>
+        </div>
+        <div class="modal-content first-modal">
+          <h3 class="modal-title">Galerie photo</h3>
+          <div class="modal-gallery"></div>
+          <button class="next-modal-button">Ajouter une photo</button>
+        </div>
+        <div class="modal-content second-modal hidden">
+          <h3 class="modal-title">Ajout photo</h3>
+          <form>
+            <div class="img-input-container">
+              <i class="fa-regular fa-image"></i>
+              <label for="img-upload" class="img-input-label"
+                >+ Ajouter photo</label
+              >
+              <input
+                type="file"
+                accept="image/*"
+                id="img-upload"
+                class="img-input"
+              />
+              <span>jpg, png : 4mo max</span>
+            </div>
+            <img id="preview-img" />
+            <div class="text-input-container">
+              <label for="edit-title">Titre</label>
+              <input type="text" name="edit-title" id="edit-title" />
+              <label for="edit-category">Catégorie</label>
+              <select name="select-category" id="select-category" required>
+                <option value="" selected></option>
+              </select>
+            </div>
+            <button type="submit" class="invalid-form">Valider</button>
+          </form>
+        </div>
+      </div>
+    </aside>
     <header>
       <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
       <nav>
@@ -56,6 +97,7 @@
       </section>
       <section id="portfolio">
         <h2>Mes Projets</h2>
+
         <div class="gallery"></div>
       </section>
       <section id="contact">
