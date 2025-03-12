@@ -77,7 +77,7 @@ const filterWorks = (category) => {
 };
 
 const getAdminMode = () => {
-  import("./admin.js").then((module) => module.default());
+  import("./admin.js").then((module) => module.default(works, categories));
 };
 
 fetchWorks();

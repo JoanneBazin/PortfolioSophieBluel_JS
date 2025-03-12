@@ -23,6 +23,199 @@
 
 .works-edit {
   position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 10px;
   top: 7.5px;
   left: 700px;
+  border: none;
+  color: #000000;
+  background: none;
+  cursor: pointer;
+}
+
+/* Modal properties */
+
+.modal-content.hidden {
+  display: none;
+}
+
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.modal-container {
+  border-radius: 10px;
+  background: #ffffff;
+  padding: 60px 100px 45px 100px;
+  position: relative;
+}
+
+.action-icons {
+  display: flex;
+  width: 100%;
+}
+
+.action-icons i {
+  position: absolute;
+  top: 30px;
+  cursor: pointer;
+}
+
+.close-modal {
+  right: 30px;
+  font-size: 16px;
+}
+.back-modal {
+  left: 30px;
+  font-size: 21px;
+  visibility: hidden;
+}
+
+.modal-content {
+  width: 420px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-title {
+  font-size: 26px;
+}
+
+.modal label {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.modal button {
+  font-family: "Syne";
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+  background-color: #1d6154;
+  padding: 10px 0;
+  width: 237px;
+  text-align: center;
+  align-self: center;
+  border-radius: 60px;
+  border: none;
+  cursor: pointer;
+}
+
+.modal-gallery {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  column-gap: 10px;
+  row-gap: 30px;
+  padding-bottom: 67px;
+  border-bottom: #b3b3b3 1px solid;
+  margin: 46px 0 38px 0;
+}
+
+.modal-gallery figure {
+  height: 102.57px;
+  position: relative;
+}
+
+.modal-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.modal-gallery .icon-container {
+  position: absolute;
+  width: 17px;
+  height: 17px;
+  top: 6px;
+  right: 4px;
+  z-index: 5;
+  padding-top: 2px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  border-radius: 2px;
+  color: #ffffff;
+  font-size: 10.5px;
+}
+
+.modal form {
+  text-align: left;
+  width: 100%;
+  margin: 36px 0 10px 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.img-input-container {
+  height: 169px;
+  border-radius: 3px;
+  background: #e8f1f6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 30px;
+}
+.img-input-container i {
+  font-size: 76px;
+  color: #b9c5cc;
+}
+
+.img-input-container span {
+  font-size: 10px;
+  color: #444444;
+}
+
+.img-input {
+  display: none;
+}
+
+.img-input-label {
+  background: #b9c5cc;
+  border-radius: 50px;
+  padding: 11px 33px;
+  cursor: pointer;
+  color: #306685;
+}
+
+.text-input-container {
+  display: flex;
+  flex-direction: column;
+  padding-bottom: 32px;
+  border-bottom: #b3b3b3 1px solid;
+  margin-bottom: 32px;
+}
+
+.text-input-container label {
+  margin-bottom: 10px;
+}
+
+.text-input-container input,
+select {
+  height: 50px;
+  margin-bottom: 21px;
+  font-size: 1.2em;
+  border: none;
+  box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
+
+button.invalid-form {
+  background: #a7a7a7;
+  cursor: not-allowed;
 }
