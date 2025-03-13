@@ -32,21 +32,24 @@
         </div>
         <div class="modal-content second-modal hidden">
           <h3 class="modal-title">Ajout photo</h3>
-          <form>
+          <form class="new-work-form">
             <div class="img-input-container">
-              <i class="fa-regular fa-image"></i>
-              <label for="img-upload" class="img-input-label"
-                >+ Ajouter photo</label
-              >
-              <input
-                type="file"
-                accept="image/*"
-                id="img-upload"
-                class="img-input"
-              />
-              <span>jpg, png : 4mo max</span>
+              <img id="preview-img" />
+              <div class="img-upload-content">
+                <i class="fa-regular fa-image"></i>
+                <label for="img-upload" class="img-input-label"
+                  >+ Ajouter photo</label
+                >
+                <input
+                  type="file"
+                  accept="image/*"
+                  id="img-upload"
+                  class="img-input"
+                />
+                <span>jpg, png : 4mo max</span>
+              </div>
             </div>
-            <img id="preview-img" />
+
             <div class="text-input-container">
               <label for="edit-title">Titre</label>
               <input type="text" name="edit-title" id="edit-title" />
@@ -55,7 +58,9 @@
                 <option value="" selected></option>
               </select>
             </div>
-            <button type="submit" class="invalid-form">Valider</button>
+            <button type="submit" id="submit-btn" class="invalid-form" disabled>
+              Valider
+            </button>
           </form>
         </div>
       </div>
@@ -123,6 +128,6 @@
       </nav>
     </footer>
 
-    <script src="js/index.js" type="module"></script>
+    <script src="js/index.js" type="module" defer></script>
   </body>
 </html>

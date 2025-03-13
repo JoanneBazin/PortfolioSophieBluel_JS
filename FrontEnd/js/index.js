@@ -1,29 +1,37 @@
 import { isAdmin, updateNavButton } from "./auth.js";
+import { getWorks } from "./api.js";
 
 const gallery = document.querySelector(".gallery");
 const portfolio = document.querySelector("#portfolio");
 const categories = new Set(["Tous"]);
-let works = [];
+// let works = [];
+export let works = [];
+
+export const setWorks = (newWorks) => {
+  works = newWorks;
+  displayWorks(works);
+};
 
 const fetchWorks = async () => {
   try {
-    const response = await fetch("http://localhost:5678/api/works");
-    works = await response.json();
+    // works = await getWorks();
+    // displayWorks(works);
+    const data = await getWorks();
+    setWorks(data);
+  } catch (error) {
+    console.log(error);
+  }
 
+  updateNavButton();
+
+  if (isAdmin()) {
+    getAdminMode();
+  } else {
     works.forEach((work) => {
       categories.add(work.category.name);
     });
 
-    displayWorks(works);
-    updateNavButton();
-
-    if (isAdmin()) {
-      getAdminMode();
-    } else {
-      fetchCategories();
-    }
-  } catch (error) {
-    console.log(error);
+    fetchCategories();
   }
 };
 
@@ -31,6 +39,7 @@ const displayWorks = (works) => {
   gallery.innerHTML = "";
   works.forEach((work) => {
     const workElement = document.createElement("figure");
+    workElement.setAttribute("id", `gallery-${work.id}`);
     workElement.innerHTML = `
         <img src="${work.imageUrl}" alt="${work.title}" />
         <figcaption>${work.title}</figcaption>
@@ -77,7 +86,7 @@ const filterWorks = (category) => {
 };
 
 const getAdminMode = () => {
-  import("./admin.js").then((module) => module.default(works, categories));
+  import("./admin.js").then((module) => module.default(works));
 };
 
 fetchWorks();

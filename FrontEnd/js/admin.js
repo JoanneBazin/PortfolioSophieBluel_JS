@@ -1,24 +1,27 @@
+import { displayExistantWorks, checkFormValidity } from "./edit_work.js";
+import { getCategories } from "./api.js";
+
 const gallery = document.querySelector(".gallery");
 const portfolio = document.querySelector("#portfolio");
 const modal = document.querySelector("#edit-modal");
 const modalContainer = document.querySelector(".modal-container");
-const modalGallery = document.querySelector(".modal-gallery");
 const closeModalBtn = document.querySelector(".close-modal");
 const backModalBtn = document.querySelector(".back-modal");
 const nextModalBtn = document.querySelector(".next-modal-button");
 const selectCategory = document.querySelector("#select-category");
+const imgInput = document.querySelector(".img-input");
+const titleInput = document.querySelector("#edit-title");
+const previewImg = document.querySelector("#preview-img");
+const imgUploadContent = document.querySelector(".img-upload-content");
 
 let works;
 let categories;
 
 // Handle admin mode
-export default function adminMode(existantWorks, existantCategories) {
+export default function adminMode(existantWorks) {
   document.body.classList.add("edit-body");
 
   works = existantWorks;
-  categories = [...existantCategories].filter(
-    (category) => category !== "Tous"
-  );
 
   const editMode = document.createElement("div");
   editMode.classList.add("edit-mode");
@@ -43,7 +46,6 @@ const openEditModal = async () => {
   modal.style.display = null;
   modal.addEventListener("click", closeEditModal);
   modalContainer.addEventListener("click", stopPropagation);
-  displayExistantWorks();
   closeModalBtn.addEventListener("click", closeEditModal);
   window.addEventListener("keydown", (e) => {
     if (e.key === "Escape" || e.key === "Esc") {
@@ -52,19 +54,22 @@ const openEditModal = async () => {
   });
   nextModalBtn.addEventListener("click", handleSwitchModal);
 
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category;
-    option.textContent = category;
-    selectCategory.appendChild(option);
-  });
+  displayExistantWorks(works);
+  if (categories === undefined) {
+    fetchCategories();
+  }
+
+  imgInput.addEventListener("change", previewFile);
+  imgInput.addEventListener("change", checkFormValidity);
+  titleInput.addEventListener("input", checkFormValidity);
+  selectCategory.addEventListener("change", checkFormValidity);
 };
 
 const stopPropagation = (e) => {
   e.stopPropagation();
 };
 
-const closeEditModal = () => {
+export const closeEditModal = () => {
   if (!modal) return;
   modal.style.display = "none";
   modal.removeEventListener("click", closeEditModal);
@@ -72,22 +77,10 @@ const closeEditModal = () => {
   closeModalBtn.removeEventListener("click", closeEditModal);
   window.removeEventListener("keydown", closeEditModal);
   nextModalBtn.removeEventListener("click", handleSwitchModal);
-};
-
-const displayExistantWorks = () => {
-  modalGallery.innerHTML = "";
-
-  works.forEach((work) => {
-    const workImg = document.createElement("figure");
-    workImg.innerHTML = `
-      <img src="${work.imageUrl}" alt="${work.title}" />
-      <div class="icon-container">
-      <i class="fa-solid fa-trash-can"></i>
-      </div>
-    `;
-
-    modalGallery.appendChild(workImg);
-  });
+  imgInput.removeEventListener("change", previewFile);
+  imgInput.removeEventListener("change", checkFormValidity);
+  titleInput.removeEventListener("input", checkFormValidity);
+  selectCategory.removeEventListener("change", checkFormValidity);
 };
 
 const handleSwitchModal = () => {
@@ -101,5 +94,32 @@ const handleSwitchModal = () => {
     backModalBtn.addEventListener("click", handleSwitchModal);
   } else {
     backModalBtn.style.visibility = "hidden";
+  }
+};
+
+const fetchCategories = async () => {
+  categories = await getCategories();
+
+  categories.forEach((category) => {
+    const option = document.createElement("option");
+    option.value = category.id;
+    option.textContent = category.name;
+    selectCategory.appendChild(option);
+  });
+};
+
+const previewFile = () => {
+  const file = imgInput.files[0];
+
+  if (file) {
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      previewImg.src = e.target.result;
+      previewImg.style.display = "block";
+      imgUploadContent.style.display = "none";
+    };
+
+    reader.readAsDataURL(file);
   }
 };

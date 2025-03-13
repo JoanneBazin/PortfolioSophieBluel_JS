@@ -1,0 +1,47 @@
+const token = sessionStorage.getItem("token");
+
+export const getWorks = async () => {
+  const response = await fetch("http://localhost:5678/api/works");
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw new Error(`Erreur lors de la récupération : ${response.status}`);
+  }
+};
+export const getCategories = async () => {
+  const response = await fetch("http://localhost:5678/api/categories");
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw new Error(`Erreur lors de la récupération : ${response.status}`);
+  }
+};
+export const addWork = async (formData) => {
+  const response = await fetch("http://localhost:5678/api/works", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    body: formData,
+  });
+
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw new Error(`Erreur lors de l'ajout' : ${response.status}`);
+  }
+};
+export const removeWork = async (workId) => {
+  const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (response.ok) {
+    console.log("Suppression réussie");
+  } else {
+    throw new Error(`Erreur lors de la suppression' : ${response.status}`);
+  }
+};

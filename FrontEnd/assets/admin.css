@@ -151,6 +151,7 @@
   border-radius: 2px;
   color: #ffffff;
   font-size: 10.5px;
+  cursor: pointer;
 }
 
 .modal form {
@@ -165,13 +166,27 @@
   height: 169px;
   border-radius: 3px;
   background: #e8f1f6;
+
+  margin-bottom: 30px;
+}
+
+#preview-img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  justify-self: center;
+  display: none;
+}
+
+.img-upload-content {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 8px;
-  margin-bottom: 30px;
 }
+
 .img-input-container i {
   font-size: 76px;
   color: #b9c5cc;
