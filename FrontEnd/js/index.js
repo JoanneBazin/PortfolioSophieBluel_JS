@@ -14,8 +14,6 @@ export const setWorks = (newWorks) => {
 
 const fetchWorks = async () => {
   try {
-    // works = await getWorks();
-    // displayWorks(works);
     const data = await getWorks();
     setWorks(data);
   } catch (error) {

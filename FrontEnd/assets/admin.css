@@ -164,18 +164,22 @@
 
 .img-input-container {
   height: 169px;
+
   border-radius: 3px;
   background: #e8f1f6;
 
   margin-bottom: 30px;
+  position: relative;
 }
 
 #preview-img {
   max-height: 100%;
   max-width: 100%;
+  position: absolute;
   object-fit: cover;
-  justify-self: center;
-  display: none;
+  left: 50%;
+  transform: translate(-50%);
+  visibility: hidden;
 }
 
 .img-upload-content {
@@ -209,6 +213,14 @@
   color: #306685;
 }
 
+.img-input-label.preview-mode {
+  position: absolute;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+}
+
 .text-input-container {
   display: flex;
   flex-direction: column;
@@ -232,5 +244,11 @@ select {
 
 button.invalid-form {
   background: #a7a7a7;
-  cursor: not-allowed;
+}
+
+span.error-message {
+  color: red;
+  font-size: 0.8em;
+  padding-bottom: 6px;
+  text-align: center;
 }

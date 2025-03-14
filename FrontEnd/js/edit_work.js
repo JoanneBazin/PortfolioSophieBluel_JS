@@ -7,6 +7,7 @@ const selectCategory = document.querySelector("#select-category");
 const imgInput = document.querySelector(".img-input");
 const titleInput = document.querySelector("#edit-title");
 const submitWorkBtn = document.querySelector("#submit-btn");
+const newWorkForm = document.querySelector(".new-work-form");
 
 export const displayExistantWorks = () => {
   modalGallery.innerHTML = "";
@@ -49,21 +50,37 @@ export const checkFormValidity = () => {
     selectCategory.value !== ""
   ) {
     submitWorkBtn.classList.remove("invalid-form");
-    submitWorkBtn.disabled = false;
-    submitWorkBtn.addEventListener("click", submitWork);
+    hideError();
+    newWorkForm.removeEventListener("submit", showError);
+    newWorkForm.addEventListener("submit", submitWork);
   } else {
     submitWorkBtn.classList.add("invalid-form");
-    submitWorkBtn.disabled = true;
+    newWorkForm.removeEventListener("submit", submitWork);
+    newWorkForm.addEventListener("submit", showError);
   }
 };
 
-const submitWork = async (e) => {
-  const newWorkForm = document.querySelector(".new-work-form");
-  const previewImg = document.querySelector("#preview-img");
-  const imgUploadContent = document.querySelector(".img-upload-content");
-
+const showError = (e) => {
   e.preventDefault();
+  let errorSpan = submitWorkBtn.previousElementSibling;
 
+  if (!errorSpan || !errorSpan.classList.contains("error-message")) {
+    errorSpan = document.createElement("span");
+    errorSpan.classList.add("error-message");
+    errorSpan.textContent = `Veuillez renseigner tous les champs`;
+    submitWorkBtn.parentNode.insertBefore(errorSpan, submitWorkBtn);
+  }
+};
+
+const hideError = () => {
+  let errorSpan = submitWorkBtn.previousElementSibling;
+  if (errorSpan && errorSpan.classList.contains("error-message")) {
+    errorSpan.remove();
+  }
+};
+
+export const submitWork = async (e) => {
+  e.preventDefault();
   const formData = new FormData();
   formData.append("image", imgInput.files[0]);
   formData.append("title", titleInput.value);
@@ -71,10 +88,6 @@ const submitWork = async (e) => {
 
   try {
     const newWork = await addWork(formData);
-
-    newWorkForm.reset();
-    previewImg.style.display = "none";
-    imgUploadContent.style.display = null;
 
     setWorks([...works, newWork]);
     displayExistantWorks();
