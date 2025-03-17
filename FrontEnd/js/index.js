@@ -4,7 +4,7 @@ import { getWorks } from "./api.js";
 const gallery = document.querySelector(".gallery");
 const portfolio = document.querySelector("#portfolio");
 const categories = new Set(["Tous"]);
-// let works = [];
+
 export let works = [];
 
 export const setWorks = (newWorks) => {
@@ -12,24 +12,23 @@ export const setWorks = (newWorks) => {
   displayWorks(works);
 };
 
+const initPortfolio = async () => {
+  await fetchWorks();
+  updateNavButton();
+
+  if (isAdmin()) {
+    handleAdminMode();
+  } else {
+    setupCategories();
+  }
+};
+
 const fetchWorks = async () => {
   try {
     const data = await getWorks();
     setWorks(data);
   } catch (error) {
-    console.log(error);
-  }
-
-  updateNavButton();
-
-  if (isAdmin()) {
-    getAdminMode();
-  } else {
-    works.forEach((work) => {
-      categories.add(work.category.name);
-    });
-
-    fetchCategories();
+    console.log("Erreur de chargement : ", error);
   }
 };
 
@@ -38,16 +37,27 @@ const displayWorks = (works) => {
   works.forEach((work) => {
     const workElement = document.createElement("figure");
     workElement.setAttribute("id", `gallery-${work.id}`);
-    workElement.innerHTML = `
-        <img src="${work.imageUrl}" alt="${work.title}" />
-        <figcaption>${work.title}</figcaption>
-        `;
+    workElement.setAttribute("data-category", work.category.name);
+
+    const imgElement = document.createElement("img");
+    imgElement.src = work.imageUrl;
+    imgElement.alt = work.title;
+
+    const captionElement = document.createElement("figcaption");
+    captionElement.textContent = work.title;
+
+    workElement.appendChild(imgElement);
+    workElement.appendChild(captionElement);
 
     gallery.appendChild(workElement);
   });
 };
 
-const fetchCategories = () => {
+const setupCategories = () => {
+  works.forEach((work) => {
+    categories.add(work.category.name);
+  });
+
   const filtersContainer = document.createElement("div");
   filtersContainer.classList.add("filters-container");
 
@@ -67,24 +77,23 @@ const fetchCategories = () => {
 const filterWorks = (category) => {
   const filterButtons = document.querySelectorAll(".filters-container button");
   filterButtons.forEach((button) => {
-    button.classList.remove("active-filter");
-    if (button.textContent === category) {
-      button.classList.add("active-filter");
-    }
+    button.classList.toggle("active-filter", button.textContent === category);
   });
 
-  if (category === "Tous") {
-    displayWorks(works);
-  } else {
-    const filteredWorks = works.filter(
-      (work) => work.category.name === category
-    );
-    displayWorks(filteredWorks);
-  }
+  const allFigures = document.querySelectorAll(".gallery figure");
+  allFigures.forEach((figure) => {
+    const figureCategory = figure.getAttribute("data-category");
+
+    if (category === "Tous" || figureCategory === category) {
+      figure.style.display = null;
+    } else {
+      figure.style.display = "none";
+    }
+  });
 };
 
-const getAdminMode = () => {
-  import("./admin.js").then((module) => module.default(works));
+const handleAdminMode = () => {
+  import("./admin.js").then((module) => module.default());
 };
 
-fetchWorks();
+initPortfolio();

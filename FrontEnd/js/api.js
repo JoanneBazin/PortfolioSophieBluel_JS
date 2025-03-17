@@ -1,5 +1,21 @@
 const token = sessionStorage.getItem("token");
 
+export const getUser = async (email, password) => {
+  const response = await fetch("http://localhost:5678/api/users/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  });
+  if (!response.ok) {
+    if (response.status === 401) {
+      throw new Error("Erreur dans l’identifiant ou le mot de passe");
+    }
+    throw new Error(`Erreur lors de l'authentification`);
+  }
+  return await response.json();
+};
 export const getWorks = async () => {
   const response = await fetch("http://localhost:5678/api/works");
   if (response.ok) {
