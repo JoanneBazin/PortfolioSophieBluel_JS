@@ -162,6 +162,13 @@
   flex-direction: column;
 }
 
+span.error-message {
+  width: 100%;
+  color: red;
+  font-size: 0.9em;
+  text-align: center;
+}
+
 .img-input-container {
   height: 169px;
 
@@ -196,7 +203,7 @@
   color: #b9c5cc;
 }
 
-.img-input-container span {
+.img-input-container p {
   font-size: 10px;
   color: #444444;
 }
@@ -244,11 +251,4 @@ select {
 
 button.invalid-form {
   background: #a7a7a7;
-}
-
-span.error-message {
-  color: red;
-  font-size: 0.8em;
-  padding-bottom: 6px;
-  text-align: center;
 }

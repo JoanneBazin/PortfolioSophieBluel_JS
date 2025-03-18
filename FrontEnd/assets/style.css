@@ -177,6 +177,11 @@ nav li {
 li:hover {
   color: #b1663c;
 }
+
+.hidden {
+  display: none;
+}
+
 #introduction {
   display: flex;
   align-items: center;
@@ -203,6 +208,13 @@ li:hover {
 #portfolio h2 {
   text-align: center;
   margin-bottom: 1.6em;
+}
+
+.error-fetch-works {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-style: italic;
+  line-height: 1.5;
 }
 
 .filters-container {

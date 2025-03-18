@@ -3,13 +3,12 @@ import { getWorks } from "./api.js";
 
 const gallery = document.querySelector(".gallery");
 const portfolio = document.querySelector("#portfolio");
-const categories = new Set(["Tous"]);
 
 export let works = [];
 
-export const setWorks = (newWorks) => {
+export const setWorks = (newWorks, updateAll = false) => {
   works = newWorks;
-  displayWorks(works);
+  if (updateAll) displayWorks(works);
 };
 
 const initPortfolio = async () => {
@@ -26,34 +25,41 @@ const initPortfolio = async () => {
 const fetchWorks = async () => {
   try {
     const data = await getWorks();
-    setWorks(data);
+    setWorks(data, true);
   } catch (error) {
     console.log("Erreur de chargement : ", error);
+
+    gallery.innerHTML = `<p class= "error-fetch-works">Impossible de charger les projets.<br> Veuillez réessayer ultérieurement.</p>`;
   }
 };
 
 const displayWorks = (works) => {
   gallery.innerHTML = "";
   works.forEach((work) => {
-    const workElement = document.createElement("figure");
-    workElement.setAttribute("id", `gallery-${work.id}`);
-    workElement.setAttribute("data-category", work.category.name);
-
-    const imgElement = document.createElement("img");
-    imgElement.src = work.imageUrl;
-    imgElement.alt = work.title;
-
-    const captionElement = document.createElement("figcaption");
-    captionElement.textContent = work.title;
-
-    workElement.appendChild(imgElement);
-    workElement.appendChild(captionElement);
-
-    gallery.appendChild(workElement);
+    createGalleryFigure(work);
   });
 };
 
+export const createGalleryFigure = (work) => {
+  const workElement = document.createElement("figure");
+  workElement.dataset.id = work.id;
+  workElement.dataset.category = work.category.name;
+
+  const imgElement = document.createElement("img");
+  imgElement.src = work.imageUrl;
+  imgElement.alt = work.title;
+
+  const captionElement = document.createElement("figcaption");
+  captionElement.textContent = work.title;
+
+  workElement.append(imgElement, captionElement);
+
+  gallery.appendChild(workElement);
+};
+
 const setupCategories = () => {
+  const categories = new Set(["Tous"]);
+
   works.forEach((work) => {
     categories.add(work.category.name);
   });
@@ -82,18 +88,21 @@ const filterWorks = (category) => {
 
   const allFigures = document.querySelectorAll(".gallery figure");
   allFigures.forEach((figure) => {
-    const figureCategory = figure.getAttribute("data-category");
-
-    if (category === "Tous" || figureCategory === category) {
-      figure.style.display = null;
-    } else {
-      figure.style.display = "none";
-    }
+    figure.classList.toggle(
+      "hidden",
+      !(
+        category === "Tous" || figure.getAttribute("data-category") === category
+      )
+    );
   });
 };
 
 const handleAdminMode = () => {
-  import("./admin.js").then((module) => module.default());
+  import("./admin.js")
+    .then((module) => module.default())
+    .catch((error) =>
+      console.log("Erreur lors du chargement du mode admin : ", error)
+    );
 };
 
 initPortfolio();

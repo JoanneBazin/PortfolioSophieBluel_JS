@@ -1,8 +1,9 @@
 import { addWork, removeWork, getCategories } from "./api.js";
-import { works, setWorks } from "./index.js";
+import { works, setWorks, createGalleryFigure } from "./index.js";
 import { closeEditModal } from "./admin.js";
 
 const modalGallery = document.querySelector(".modal-gallery");
+const gallery = document.querySelector(".gallery");
 const selectCategory = document.querySelector("#select-category");
 const imgInput = document.querySelector(".img-input");
 const titleInput = document.querySelector("#edit-title");
@@ -11,6 +12,7 @@ const newWorkForm = document.querySelector(".new-work-form");
 const previewImg = document.querySelector("#preview-img");
 const imgUploadContent = document.querySelector(".img-upload-content");
 const imgInputLabel = document.querySelector(".img-input-label");
+const textInputContainer = document.querySelector(".text-input-container");
 
 let categories;
 export const initModalState = () => {
@@ -37,38 +39,43 @@ export const displayExistantWorks = () => {
   modalGallery.innerHTML = "";
 
   works.forEach((work) => {
-    const workImg = document.createElement("figure");
-    workImg.setAttribute("id", `modal-${work.id}`);
-
-    const imgElement = document.createElement("img");
-    imgElement.src = work.imageUrl;
-    imgElement.alt = work.title;
-
-    const iconContainer = document.createElement("div");
-    iconContainer.classList.add("icon-container");
-    const deleteIcon = document.createElement("i");
-    deleteIcon.classList.add("fa-solid", "fa-trash-can");
-    deleteIcon.setAttribute("id", work.id);
-
-    workImg.appendChild(imgElement);
-    workImg.appendChild(iconContainer);
-    iconContainer.appendChild(deleteIcon);
-
-    modalGallery.appendChild(workImg);
-
-    deleteIcon.addEventListener("click", deleteWork);
+    createModalFigure(work);
   });
 };
 
+const createModalFigure = (work) => {
+  const workImg = document.createElement("figure");
+  workImg.dataset.id = work.id;
+
+  const imgElement = document.createElement("img");
+  imgElement.src = work.imageUrl;
+  imgElement.alt = work.title;
+
+  const iconContainer = document.createElement("div");
+  iconContainer.classList.add("icon-container");
+
+  const deleteIcon = document.createElement("i");
+  deleteIcon.classList.add("fa-solid", "fa-trash-can");
+  deleteIcon.dataset.id = work.id;
+
+  deleteIcon.addEventListener("click", deleteWork);
+
+  iconContainer.appendChild(deleteIcon);
+  workImg.append(imgElement, iconContainer);
+
+  modalGallery.appendChild(workImg);
+};
+
 const deleteWork = async (e) => {
-  const workId = e.target.id;
+  const workId = e.target.dataset.id;
 
   try {
     await removeWork(workId);
     const updatedWorks = works.filter((work) => work.id !== parseInt(workId));
     setWorks(updatedWorks);
 
-    displayExistantWorks();
+    gallery.querySelector(`figure[data-id="${workId}"]`)?.remove();
+    modalGallery.querySelector(`figure[data-id="${workId}"]`)?.remove();
   } catch (error) {
     console.log("Erreur lors de la suppression :", error.message);
   }
@@ -91,21 +98,15 @@ const previewFile = () => {
   const file = imgInput.files[0];
   const allowedTypes = ["image/png", "image/jpeg"];
 
-  const existingError = imgUploadContent.querySelector(".error-message");
-  if (existingError) existingError.remove();
+  imgUploadContent.querySelector(".error-message")?.remove();
 
   if (file) {
     if (!allowedTypes.includes(file.type)) {
-      previewImg.src = "";
-      previewImg.style.visibility = "hidden";
-      imgUploadContent.style.opacity = 1;
-      imgInputLabel.classList.remove("preview-mode");
-
-      const typeError = document.createElement("span");
-      typeError.textContent =
-        "Format invalide. Seuls les fichiers .png et .jpeg/.jpg sont acceptés.";
-      typeError.classList.add("error-message");
-      imgUploadContent.appendChild(typeError);
+      resetPreview();
+      messageError(
+        "Format invalide. Fichiers .png, .jpeg et .jpg acceptés",
+        imgUploadContent
+      );
 
       imgInput.value = "";
 
@@ -125,36 +126,18 @@ const previewFile = () => {
 };
 
 export const checkFormValidity = () => {
-  if (
+  const isValid =
     imgInput.files.length > 0 &&
     titleInput.value.trim() !== "" &&
-    selectCategory.value !== ""
-  ) {
-    submitWorkBtn.classList.remove("invalid-form");
-    hideError();
-    newWorkForm.removeEventListener("submit", showError);
-    newWorkForm.addEventListener("submit", submitWork);
-  } else {
-    submitWorkBtn.classList.add("invalid-form");
-    newWorkForm.removeEventListener("submit", submitWork);
-    newWorkForm.addEventListener("submit", showError);
-  }
-};
+    selectCategory.value !== "";
 
-const showError = (e) => {
-  e.preventDefault();
-  let errorSpan = submitWorkBtn.previousElementSibling;
+  submitWorkBtn.classList.toggle("invalid-form", !isValid);
+  newWorkForm.removeEventListener("submit", showError);
+  newWorkForm.removeEventListener("submit", submitWork);
 
-  if (!errorSpan || !errorSpan.classList.contains("error-message")) {
-    errorSpan = document.createElement("span");
-    errorSpan.classList.add("error-message");
-    errorSpan.textContent = `Veuillez renseigner tous les champs`;
-    submitWorkBtn.parentNode.insertBefore(errorSpan, submitWorkBtn);
-  }
-};
+  if (isValid) clearError();
 
-const hideError = () => {
-  newWorkForm.querySelectorAll(".error").forEach((error) => error.remove());
+  newWorkForm.addEventListener("submit", isValid ? submitWork : showError);
 };
 
 export const submitWork = async (e) => {
@@ -165,34 +148,54 @@ export const submitWork = async (e) => {
   formData.append("category", selectCategory.value);
 
   try {
-    const newWork = await addWork(formData);
+    let newWork = await addWork(formData);
     const workCategory = categories.find(
       (cat) => cat.id === newWork.categoryId
     );
-
-    setWorks([
-      ...works,
-      {
-        ...newWork,
-        category: { id: newWork.categoryId, name: workCategory?.name || "" },
-      },
-    ]);
-    displayExistantWorks();
+    newWork = {
+      ...newWork,
+      category: { id: newWork.categoryId, name: workCategory?.name || "" },
+    };
+    setWorks([...works, newWork]);
+    createGalleryFigure(newWork);
+    createModalFigure(newWork);
     closeEditModal();
   } catch (error) {
     console.log("Erreur lors de l'envoi :", error.message);
   }
 };
 
+// Mise à jour formulaire
 export const resetForm = () => {
-  const workFormErrors = document.querySelectorAll(
-    ".new-work-form .error-message"
-  );
+  clearError();
   newWorkForm.reset();
+  resetPreview();
+};
+
+const resetPreview = () => {
+  previewImg.src = "";
   previewImg.style.visibility = "hidden";
   imgUploadContent.style.opacity = 1;
   imgInputLabel.classList.remove("preview-mode");
-  if (workFormErrors) {
-    workFormErrors.forEach((error) => error.remove());
-  }
+};
+
+//  Gestion erreurs
+
+const showError = (e) => {
+  e.preventDefault();
+  messageError("Veuillez renseigner tous les champs", textInputContainer);
+};
+
+const messageError = (errorContent, input) => {
+  clearError();
+  const errorSpan = document.createElement("span");
+  errorSpan.classList.add("error-message");
+  errorSpan.textContent = errorContent;
+  input.appendChild(errorSpan);
+};
+
+const clearError = () => {
+  newWorkForm
+    .querySelectorAll(".error-message")
+    .forEach((error) => error.remove());
 };

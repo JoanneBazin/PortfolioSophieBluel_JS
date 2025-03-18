@@ -1,20 +1,21 @@
 const logButton = document.getElementById("login-nav");
 
 // Handle user's authentication status
-export const isAdmin = () => sessionStorage.getItem("token") !== null;
+export const isAdmin = () => Boolean(sessionStorage.getItem("token"));
 
 export const updateNavButton = () => {
+  logButton.removeEventListener("click", handleAuth);
+
+  logButton.textContent = isAdmin() ? "logout" : "login";
+  logButton.addEventListener("click", handleAuth);
+};
+
+const handleAuth = () => {
   if (isAdmin()) {
-    logButton.textContent = "logout";
-    logButton.addEventListener("click", () => {
-      sessionStorage.removeItem("token");
-      document.body.classList.remove("edit-body");
-      window.location.reload();
-    });
+    sessionStorage.removeItem("token");
+    document.body.classList.remove("edit-body");
+    window.location.reload();
   } else {
-    logButton.textContent = "login";
-    logButton.addEventListener("click", () => {
-      window.location.href = "login.html";
-    });
+    window.location.href = "login.html";
   }
 };

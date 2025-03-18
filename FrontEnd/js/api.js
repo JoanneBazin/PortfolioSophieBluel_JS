@@ -1,4 +1,4 @@
-const token = sessionStorage.getItem("token");
+const getToken = () => sessionStorage.getItem("token");
 
 export const getUser = async (email, password) => {
   const response = await fetch("http://localhost:5678/api/users/login", {
@@ -9,7 +9,7 @@ export const getUser = async (email, password) => {
     body: JSON.stringify({ email, password }),
   });
   if (!response.ok) {
-    if (response.status === 401) {
+    if (response.status === 401 || response.status === 404) {
       throw new Error("Erreur dans l’identifiant ou le mot de passe");
     }
     throw new Error(`Erreur lors de l'authentification`);
@@ -36,7 +36,7 @@ export const addWork = async (formData) => {
   const response = await fetch("http://localhost:5678/api/works", {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
     body: formData,
   });
@@ -51,7 +51,7 @@ export const removeWork = async (workId) => {
   const response = await fetch(`http://localhost:5678/api/works/${workId}`, {
     method: "DELETE",
     headers: {
-      Authorization: `Bearer ${token}`,
+      Authorization: `Bearer ${getToken()}`,
     },
   });
 
