@@ -55,13 +55,18 @@ export default function adminMode() {
 // Gestion ouverture / fermeture modale
 
 const openEditModal = () => {
-  if (modal.style.display === "block") return;
+  if (modal.style.display === "flex") return;
 
-  modal.style.display = null;
+  modal.style.display = "flex";
+  modal.removeAttribute("aria-hidden");
+  modal.setAttribute("aria-modal", "true");
+  modal.setAttribute("aria-labelledby", "modal-title-gallery");
   initModalState();
 
   firstModal.classList.remove("hidden");
   secondModal.classList.add("hidden");
+  firstModal.inert = false;
+  secondModal.inert = true;
 
   modal.addEventListener("click", closeEditModal);
   modalContainer.addEventListener("click", stopPropagation);
@@ -83,6 +88,8 @@ const handleEscKey = (e) => {
 
 export const closeEditModal = () => {
   modal.style.display = "none";
+  modal.setAttribute("aria-hidden", "true");
+  modal.removeAttribute("aria-modal");
   resetModalState();
 
   modal.removeEventListener("click", closeEditModal);
@@ -94,14 +101,18 @@ export const closeEditModal = () => {
 };
 
 const handleSwitchModal = () => {
-  firstModal.classList.toggle("hidden");
+  const isFirstHidden = firstModal.classList.toggle("hidden");
   secondModal.classList.toggle("hidden");
 
-  if (firstModal.classList.contains("hidden")) {
-    backModalBtn.style.visibility = "visible";
-    checkFormValidity();
-  } else {
-    backModalBtn.style.visibility = "hidden";
-    resetForm();
-  }
+  firstModal.inert = isFirstHidden;
+  secondModal.inert = !isFirstHidden;
+
+  modal.setAttribute(
+    "aria-labelledby",
+    isFirstHidden ? "modal-title-add" : "modal-title-gallery"
+  );
+
+  backModalBtn.style.visibility = isFirstHidden ? "visible" : "hidden";
+
+  isFirstHidden ? checkFormValidity() : resetForm();
 };

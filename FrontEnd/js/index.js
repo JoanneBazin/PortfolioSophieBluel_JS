@@ -27,7 +27,7 @@ const fetchWorks = async () => {
     const data = await getWorks();
     setWorks(data, true);
   } catch (error) {
-    console.log("Erreur de chargement : ", error);
+    console.log(error.message);
 
     gallery.innerHTML = `<p class= "error-fetch-works">Impossible de charger les projets.<br> Veuillez réessayer ultérieurement.</p>`;
   }
@@ -56,6 +56,8 @@ export const createGalleryFigure = (work) => {
 
   gallery.appendChild(workElement);
 };
+
+// Gestion des filtres de projets
 
 const setupCategories = () => {
   const categories = new Set(["Tous"]);

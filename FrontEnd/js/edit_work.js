@@ -2,6 +2,7 @@ import { addWork, removeWork, getCategories } from "./api.js";
 import { works, setWorks, createGalleryFigure } from "./index.js";
 import { closeEditModal } from "./admin.js";
 
+const modalContainer = document.querySelector(".modal-container");
 const modalGallery = document.querySelector(".modal-gallery");
 const gallery = document.querySelector(".gallery");
 const selectCategory = document.querySelector("#select-category");
@@ -16,7 +17,10 @@ const textInputContainer = document.querySelector(".text-input-container");
 
 let categories;
 export const initModalState = () => {
-  displayExistantWorks();
+  if (!modalGallery.hasChildNodes()) {
+    displayExistantWorks();
+  }
+
   if (!categories || categories.length === 0) {
     fetchCategories();
   }
@@ -37,6 +41,11 @@ export const resetModalState = () => {
 // Modal 1 -- Galerie photo
 export const displayExistantWorks = () => {
   modalGallery.innerHTML = "";
+
+  if (!works || works.length === 0) {
+    modalGallery.innerHTML = `<p class= "error-fetch-works">Aucun projet trouvé.</p>`;
+    return;
+  }
 
   works.forEach((work) => {
     createModalFigure(work);
@@ -77,21 +86,42 @@ const deleteWork = async (e) => {
     gallery.querySelector(`figure[data-id="${workId}"]`)?.remove();
     modalGallery.querySelector(`figure[data-id="${workId}"]`)?.remove();
   } catch (error) {
-    console.log("Erreur lors de la suppression :", error.message);
+    console.log(error.message);
+    messageError("Erreur lors de la suppression du projet", modalGallery);
   }
 };
 
 // Modale 2 -- Ajout projet
 
 const fetchCategories = async () => {
-  categories = await getCategories();
+  try {
+    categories = await getCategories();
 
-  categories.forEach((category) => {
-    const option = document.createElement("option");
-    option.value = category.id;
-    option.textContent = category.name;
-    selectCategory.appendChild(option);
-  });
+    categories.forEach((category) => {
+      const option = document.createElement("option");
+      option.value = category.id;
+      option.textContent = category.name;
+      selectCategory.appendChild(option);
+    });
+  } catch (error) {
+    console.log(error.message);
+    messageError("Impossible de charger les catégories", textInputContainer);
+  }
+};
+
+export const checkFormValidity = () => {
+  const isValid =
+    imgInput.files.length > 0 &&
+    titleInput.value.trim() !== "" &&
+    selectCategory.value !== "";
+
+  submitWorkBtn.classList.toggle("invalid-form", !isValid);
+  newWorkForm.removeEventListener("submit", showError);
+  newWorkForm.removeEventListener("submit", submitWork);
+
+  if (isValid) clearError();
+
+  newWorkForm.addEventListener("submit", isValid ? submitWork : showError);
 };
 
 const previewFile = () => {
@@ -125,21 +155,6 @@ const previewFile = () => {
   }
 };
 
-export const checkFormValidity = () => {
-  const isValid =
-    imgInput.files.length > 0 &&
-    titleInput.value.trim() !== "" &&
-    selectCategory.value !== "";
-
-  submitWorkBtn.classList.toggle("invalid-form", !isValid);
-  newWorkForm.removeEventListener("submit", showError);
-  newWorkForm.removeEventListener("submit", submitWork);
-
-  if (isValid) clearError();
-
-  newWorkForm.addEventListener("submit", isValid ? submitWork : showError);
-};
-
 export const submitWork = async (e) => {
   e.preventDefault();
   const formData = new FormData();
@@ -162,6 +177,7 @@ export const submitWork = async (e) => {
     closeEditModal();
   } catch (error) {
     console.log("Erreur lors de l'envoi :", error.message);
+    messageError("Erreur lors de l'envoi du projet", newWorkForm);
   }
 };
 
@@ -195,7 +211,7 @@ const messageError = (errorContent, input) => {
 };
 
 const clearError = () => {
-  newWorkForm
+  modalContainer
     .querySelectorAll(".error-message")
     .forEach((error) => error.remove());
 };

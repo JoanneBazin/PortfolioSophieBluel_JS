@@ -36,10 +36,6 @@
 
 /* Modal properties */
 
-.modal-content.hidden {
-  display: none;
-}
-
 .modal {
   position: fixed;
   top: 0;
@@ -47,7 +43,7 @@
   width: 100vw;
   height: 100vh;
   background: rgba(0, 0, 0, 0.3);
-  display: flex;
+  display: none;
   justify-content: center;
   align-items: center;
   z-index: 100;
@@ -58,6 +54,10 @@
   background: #ffffff;
   padding: 60px 100px 45px 100px;
   position: relative;
+}
+
+.modal-content.hidden {
+  display: none;
 }
 
 .action-icons {
@@ -113,6 +113,15 @@
   cursor: pointer;
 }
 
+span.error-message {
+  width: 100%;
+  color: red;
+  font-size: 0.9em;
+  text-align: center;
+  grid-column: 1 / -1;
+  margin-top: 5px;
+}
+
 .modal-gallery {
   width: 100%;
   display: grid;
@@ -160,13 +169,6 @@
   margin: 36px 0 10px 0;
   display: flex;
   flex-direction: column;
-}
-
-span.error-message {
-  width: 100%;
-  color: red;
-  font-size: 0.9em;
-  text-align: center;
 }
 
 .img-input-container {

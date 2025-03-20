@@ -19,19 +19,19 @@
     ></script>
   </head>
   <body>
-    <aside id="edit-modal" class="modal" style="display: none">
+    <aside id="edit-modal" class="modal" aria-hidden="true" role="dialog">
       <div class="modal-container">
         <div class="action-icons">
           <i class="fa-solid fa-arrow-left back-modal"></i>
           <i class="fa-solid fa-xmark close-modal"></i>
         </div>
-        <div class="modal-content first-modal">
-          <h3 class="modal-title">Galerie photo</h3>
+        <section class="modal-content first-modal">
+          <h3 id="modal-title-gallery" class="modal-title">Galerie photo</h3>
           <div class="modal-gallery"></div>
           <button class="next-modal-button">Ajouter une photo</button>
-        </div>
-        <div class="modal-content second-modal hidden">
-          <h3 class="modal-title">Ajout photo</h3>
+        </section>
+        <section class="modal-content second-modal hidden">
+          <h3 id="modal-title-add" class="modal-title">Ajout photo</h3>
           <form class="new-work-form">
             <div class="img-input-container">
               <img id="preview-img" />
@@ -63,7 +63,7 @@
               Valider
             </button>
           </form>
-        </div>
+        </section>
       </div>
     </aside>
     <header>
