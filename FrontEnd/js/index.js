@@ -27,8 +27,6 @@ const fetchWorks = async () => {
     const data = await getWorks();
     setWorks(data, true);
   } catch (error) {
-    console.log(error.message);
-
     gallery.innerHTML = `<p class= "error-fetch-works">Impossible de charger les projets.<br> Veuillez réessayer ultérieurement.</p>`;
   }
 };

@@ -60,7 +60,7 @@ const createModalFigure = (work) => {
   imgElement.src = work.imageUrl;
   imgElement.alt = work.title;
 
-  const iconContainer = document.createElement("div");
+  const iconContainer = document.createElement("button");
   iconContainer.classList.add("icon-container");
 
   const deleteIcon = document.createElement("i");
@@ -86,7 +86,6 @@ const deleteWork = async (e) => {
     gallery.querySelector(`figure[data-id="${workId}"]`)?.remove();
     modalGallery.querySelector(`figure[data-id="${workId}"]`)?.remove();
   } catch (error) {
-    console.log(error.message);
     messageError("Erreur lors de la suppression du projet", modalGallery);
   }
 };
@@ -104,7 +103,6 @@ const fetchCategories = async () => {
       selectCategory.appendChild(option);
     });
   } catch (error) {
-    console.log(error.message);
     messageError("Impossible de charger les catégories", textInputContainer);
   }
 };
@@ -176,7 +174,6 @@ export const submitWork = async (e) => {
     createModalFigure(newWork);
     closeEditModal();
   } catch (error) {
-    console.log("Erreur lors de l'envoi :", error.message);
     messageError("Erreur lors de l'envoi du projet", newWorkForm);
   }
 };

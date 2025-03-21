@@ -38,7 +38,7 @@ export default function adminMode() {
     worksEdit.classList.add("works-edit");
 
     const editIcon = document.createElement("i");
-    editIcon.classList.add("fa-solid", "fa-pen-to-square");
+    editIcon.classList.add("fa-regular", "fa-pen-to-square");
 
     const editText = document.createElement("span");
     editText.textContent = "modifier";

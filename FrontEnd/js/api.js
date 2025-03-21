@@ -55,9 +55,7 @@ export const removeWork = async (workId) => {
     },
   });
 
-  if (response.ok) {
-    console.log("Suppression réussie");
-  } else {
+  if (!response.ok) {
     throw new Error(`Erreur lors de la suppression' : ${response.status}`);
   }
 };
