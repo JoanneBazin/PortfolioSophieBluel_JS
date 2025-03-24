@@ -52,33 +52,31 @@
 .modal-container {
   border-radius: 10px;
   background: #ffffff;
-  padding: 10px 100px 0 100px;
-  position: relative;
-}
-
-.modal-content.hidden {
-  display: none;
 }
 
 .action-icons {
   display: flex;
-  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  margin: 30px 30px 0 30px;
 }
 
-.action-icons i {
-  position: absolute;
-  top: 30px;
+.action-icons button {
   cursor: pointer;
+  border: none;
+  background: none;
 }
 
 .close-modal {
-  right: 30px;
   font-size: 18px;
 }
 .back-modal {
-  left: 30px;
   font-size: 21px;
   visibility: hidden;
+}
+
+.modal-content.hidden {
+  display: none;
 }
 
 .modal-content {
@@ -87,6 +85,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin: 10px 100px 45px 100px;
 }
 
 .modal-title {
