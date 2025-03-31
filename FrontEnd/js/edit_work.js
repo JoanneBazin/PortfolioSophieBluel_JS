@@ -5,7 +5,7 @@ import { closeEditModal } from "./admin.js";
 const modalContainer = document.querySelector(".modal-container");
 const modalGallery = document.querySelector(".modal-gallery");
 const gallery = document.querySelector(".gallery");
-const selectCategory = document.querySelector("#select-category");
+const selectCategory = document.querySelector("#edit-category");
 const imgInput = document.querySelector(".img-input");
 const titleInput = document.querySelector("#edit-title");
 const submitWorkBtn = document.querySelector("#submit-btn");
